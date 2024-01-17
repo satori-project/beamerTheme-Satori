@@ -1,0 +1,555 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Name     : beamerthemesatori.sty
+% Author   : Satori
+% Based on : https://github.com/nkly/beamer-modern
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ProvidesPackage{beamerthemesatori}[2024/01/16]
+\mode<presentation>
+
+
+% -- 行間指定 -- %
+\renewcommand{\baselinestretch}{1.2} % 基本行間（倍率）
+\setlength{\parskip}{0.5em}          % 段落行間（追加）
+
+
+% -- \today実行結果の日本語化 -- %
+\renewcommand{\today}{\number\year 年\number\month 月\number\day 日}
+
+% -- logo -- %
+\newcommand{\logoImage}{}
+\usepackage{ifthen}
+\newcommand{\includegraphicsIfExist}[1]{%
+    \ifthenelse{\NOT\equal{\logoImage}{}}{%
+        \includegraphics[height=#1]{\logoImage}%
+    }{% Nothing to Do.
+    }%
+}
+\titlegraphic{\includegraphicsIfExist{1cm}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% -- custom colors -- %
+\definecolor{mainColor}  {Hsb}{0, 0, 0.20} % 前景色（目次背景色）
+\definecolor{subColor}   {Hsb}{0, 0, 0.97} % 背景色
+\definecolor{tocColor}   {Hsb}{0, 0, 0.80} % 目次色
+\definecolor{blockColor} {Hsb}{0, 0, 0.45} % 通常ブロックタイトル背景色
+\definecolor{quotationBg}{Hsb}{0, 0, 0.80} % 引用背景色
+
+\newcommand{\defineColorWithHue}[1]{
+    \definecolor{subColor}   {Hsb}{#1, 0.03, 0.98} % 背景色
+    \definecolor{blockColor} {Hsb}{#1, 0.40, 0.60} % 通常ブロックタイトル背景色
+    % 以下、指定Hueの固有明度に従って分岐
+    \ifthenelse{40 < #1 \AND #1 < 96}{
+        % 明度：高
+        \definecolor{mainColor}  {Hsb}{#1, 0.90, 0.40} % 前景色（目次背景色）
+        \definecolor{tocColor}   {Hsb}{#1, 0.82, 1.00} % 目次色
+        \definecolor{quotationBg}{Hsb}{#1, 0.30, 0.95} % 引用背景色
+    }{
+    \ifthenelse{20 < #1 \AND #1 < 200}{
+        % 明度：中高
+        \definecolor{mainColor}  {Hsb}{#1, 0.90, 0.45} % 前景色（目次背景色）
+        \definecolor{tocColor}   {Hsb}{#1, 0.65, 1.00} % 目次色
+        \definecolor{quotationBg}{Hsb}{#1, 0.24, 0.95} % 引用背景色
+    }{
+    \ifthenelse{220 < #1 \AND #1 < 280}{
+        % 明度：低
+        \definecolor{mainColor}  {Hsb}{#1, 0.90, 0.55} % 前景色（目次背景色）
+        \definecolor{tocColor}   {Hsb}{#1, 0.30, 1.00} % 目次色
+        \definecolor{quotationBg}{Hsb}{#1, 0.12, 0.95} % 引用背景色
+    }{
+        % 明度：中低
+        \definecolor{mainColor}  {Hsb}{#1, 0.90, 0.50} % 前景色（目次背景色）
+        \definecolor{tocColor}   {Hsb}{#1, 0.48, 1.00} % 目次色
+        \definecolor{quotationBg}{Hsb}{#1, 0.18, 0.95} % 引用背景色
+    }}}
+}
+
+\definecolor{modernWhite}{HTML}{ECF0F1}    % ブロック文字色
+\definecolor{modernDarkBlue}{HTML}{2C3E50} % 通常文字色
+\definecolor{modernRed}{HTML}{E74C3C}
+\definecolor{modernGreen}{HTML}{1BAD58}
+
+% -- hyperref color -- %
+\hypersetup{
+    colorlinks=true,
+    linkcolor=tocColor,
+    urlcolor=Blue,
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% -- custom fonts -- %
+\usepackage{fontspec}
+\newfontfamily{\modernFontNormal}{Roboto}
+\newfontfamily{\modernFontBold}{Roboto Bold}
+\newfontfamily{\modernFontExtraBold}{Roboto Black}
+\setmainfont[ % luatexja-presetに合せてlt字形を設定
+  Ligatures = TeX,
+  FontFace  = {l}{n}{Coelacanth Light},
+  FontFace  = {l}{it}{Coelacanth Light}
+]{Coelacanth}
+\setsansfont[ % luatexja-presetに合せてeb字形を設定
+  Ligatures = TeX,
+  FontFace  = {eb}{n}{Roboto Black},
+  FontFace  = {eb}{it}{Roboto Black Italic}
+]{Roboto}
+\setmonofont{TXTT} % inconsolata TXTT AnonymousPro あたりがO/0の見分けやすさに特化。
+
+% -- custom fonts(JP) -- %
+\usepackage{luatexja} % ltjclasses, ltjsclasses を使うときはこの行不要
+\usepackage[ % 既定フォント指定：
+  haranoaji, % ・原ノ味
+  deluxe,    % ・3ウェイト（通常サイズの他、明朝体はltとbf、ゴシック体はbfとebが使用可能）
+  NLC        % ・N(jis04)字形
+]{luatexja-preset}
+\renewcommand{\kanjifamilydefault}{\gtdefault}% 既定字体指定：ゴシック
+\usepackage{luatexja-fontspec} % フォント設定
+\usepackage{luatexja-otf} % オープンタイプ機能
+\setmonojfont{HaranoAjiGothic} % これが無いとverb/verbatimの日本語が明朝体になる(listings環境はこの設定無しでもゴシック)。
+\newjfontfamily{\modernjFontNormal}{HaranoAjiGothic-Regular}
+\newjfontfamily{\modernjFontBold}{HaranoAjiGothic-Bold}
+\newjfontfamily{\modernjFontExtraBold}{HaranoAjiGothic-Heavy}
+
+% -- 数式フォントがSansに置換されないよう制御 -- %
+\usefonttheme{professionalfonts}
+
+% -- ルビ・圈點 -- %
+\usepackage{pxrubrica}
+\rubysetup{(cJ)}
+
+% -- セリフ体（明朝体＋ローマン体）を使用するコマンド -- %
+\newcommand{\textserif}[1]{\textmc{\textrm{#1}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% -- general beamer colors -- %
+\setbeamercolor{palette primary}{bg=subColor, fg=mainColor}
+\setbeamercolor{palette secondary}{bg=mainColor, fg=subColor}
+
+\setbeamercolor{palette tertiary}{bg=blockColor, fg=modernWhite}
+\setbeamercolor{palette quaternary}{bg=modernDarkBlue, fg=modernWhite}
+
+\setbeamercolor{title}{fg=mainColor}
+\setbeamercolor{subtitle}{fg=mainColor}
+\setbeamercolor{author}{fg=mainColor}
+\setbeamercolor{institute}{fg=mainColor}
+\setbeamercolor{date}{fg=mainColor}
+
+\setbeamercolor{frametitle}{parent=palette secondary}
+\setbeamercolor{section in toc}{fg=tocColor}
+
+\setbeamercolor{background canvas}{parent=palette primary}
+\setbeamercolor{normal text}{fg=modernDarkBlue}
+\setbeamercolor{item}{fg=mainColor}
+
+\setbeamercolor{block title}{parent=palette tertiary}
+\setbeamercolor{block body}{parent=palette quaternary}
+\setbeamercolor{block title alerted}{bg=modernRed, fg=modernWhite}
+\setbeamercolor{block body alerted}{parent=palette quaternary}
+\setbeamercolor{block title example}{bg=modernGreen, fg=modernWhite}
+\setbeamercolor{block body example}{parent=palette quaternary}
+
+\setbeamercolor{structure}{fg=mainColor}      % \structure{文字} 使用時の文字色
+\setbeamercolor{alerted text}{fg=modernRed}   % \alert{文字} 使用時の文字色
+\setbeamercolor{example text}{fg=modernGreen} % ？
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% -- beamer fonts -- %
+\setbeamerfont{title}{family={\modernFontExtraBold\modernjFontExtraBold}, size=\fontsize{30}{30}}
+\setbeamerfont{subtitle}{family={\modernFontBold\modernjFontBold}, size=\fontsize{15}{15}}
+\setbeamerfont{author}{family={\modernFontNormal\modernjFontNormal}, size=\fontsize{10}{10}}
+\setbeamerfont{institute}{family={\modernFontNormal\modernjFontNormal}, size=\fontsize{10}{10}}
+\setbeamerfont{date}{family={\modernFontNormal\modernjFontNormal}, size=\fontsize{7}{7}}
+
+\setbeamerfont{frametitle}{family={\modernFontBold\modernjFontBold}, size=\fontsize{15}{15}}
+\setbeamerfont{section in toc}{family={\modernFontBold\modernjFontBold}, size=\fontsize{13}{13}}
+
+\setbeamerfont{item}{family={\modernFontNormal\modernjFontNormal}}
+\setbeamerfont{block title}{family=\modernFontNormal}
+\setbeamerfont{block body}{family=\modernFontNormal}
+\setbeamerfont{block title example}{family=\modernFontNormal}
+\setbeamerfont{block body example}{family=\modernFontNormal}
+\setbeamerfont{block title alerted}{family=\modernFontNormal}
+\setbeamerfont{block body alerted}{family=\modernFontNormal}
+
+\setbeamerfont{page number in head/foot}{family=\modernFontBold}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% -- beamer frame title -- %
+\setbeamertemplate{frametitle}{
+    \vspace{-0.5ex}
+    \begin{beamercolorbox}[wd=\paperwidth,leftskip=0.3cm,rightskip=0.3cm,ht=2.5ex,dp=0.8ex]{frametitle}
+        \usebeamerfont{frametitle}\textsc{\insertframetitle}% 小文字をSmallCapital化したくない場合、\textscを除去
+        \hfill\raisebox{-0.18cm}[0pt]{\includegraphicsIfExist{0.72cm}}
+    \end{beamercolorbox}
+}
+
+
+% -- section frame -- %
+\setcounter{tocdepth}{1} % 目次にsectionのみを表示
+\AtBeginSection[]{
+    \begingroup
+        \setbeamercolor{background canvas}{parent=palette secondary}
+        \begin{frame}[plain]
+            \vfill
+            \tableofcontents[currentsection]
+            \vfill
+        \end{frame}
+    \endgroup
+}
+
+
+% -- toc elements -- %
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+
+
+% -- title page -- %
+\newcommand{\defaultTitle}{
+  \vbox{}
+  \vfill
+  \begingroup
+    \centering
+    \begin{beamercolorbox}[sep=8pt,center]{title}
+      \usebeamerfont{title}\inserttitle\par%
+      \ifx\insertsubtitle\@empty%
+      \else%
+        \vskip0.25em%
+        {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+      \fi%
+    \end{beamercolorbox}%
+    \vskip1em\par
+    \begin{beamercolorbox}[sep=8pt,center]{author}
+      \usebeamerfont{author}\insertauthor
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=8pt,center]{institute}
+      \usebeamerfont{institute}\insertinstitute
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=8pt,center]{date}
+      \usebeamerfont{date}\insertdate
+    \end{beamercolorbox}\vskip0.5em
+    {\usebeamercolor[fg]{titlegraphic}\inserttitlegraphic\par}
+  \endgroup
+  \vfill
+}
+\newcommand{\narrowTitle}{
+  \vbox{}
+  \vfill
+  \begingroup
+    \centering
+    \begin{beamercolorbox}[sep=8pt,center]{title}
+      \usebeamerfont{title}\inserttitle\par%
+      \ifx\insertsubtitle\@empty%
+      \else%
+        \vskip0.25em%
+        {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+      \fi%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[sep=8pt,center]{author}
+      \usebeamerfont{author}\insertauthor
+    \end{beamercolorbox}
+    \vskip-0.5em\par
+    \begin{beamercolorbox}[sep=8pt,center]{institute}
+      \usebeamerfont{institute}\insertinstitute
+    \end{beamercolorbox}
+    \vskip-0.5em\par
+    \begin{beamercolorbox}[sep=8pt,center]{date}
+      \usebeamerfont{date}\insertdate
+    \end{beamercolorbox}
+    {\usebeamercolor[fg]{titlegraphic}\inserttitlegraphic\par}
+  \endgroup
+  \vfill
+}
+
+\usepackage{pgfornament}
+\newcommand{\titlePattern}[1]{
+  \ifthenelse{\equal{#1}{B}}{% SimpleInnerBorder
+    \setbeamertemplate{title page}{
+      \begin{tikzpicture}[overlay,remember picture]%
+          \draw[very thick, color=mainColor]([xshift= 5mm, yshift=-5mm]current page.north west)--([xshift=-5mm, yshift=-5mm]current page.north east);
+          \draw[very thick, color=mainColor]([xshift=-5mm, yshift=-5mm]current page.north east)--([xshift=-5mm, yshift= 5mm]current page.south east);
+          \draw[very thick, color=mainColor]([xshift=-5mm, yshift= 5mm]current page.south east)--([xshift= 5mm, yshift= 5mm]current page.south west);
+          \draw[very thick, color=mainColor]([xshift= 5mm, yshift= 5mm]current page.south west)--([xshift= 5mm, yshift=-5mm]current page.north west);
+      \end{tikzpicture}%
+      \defaultTitle
+    }
+  }{
+  \ifthenelse{\equal{#1}{C}}{% SimpleOuterBorder
+    \setbeamertemplate{title page}{
+      \begin{tikzpicture}[overlay,remember picture]%
+          \draw[line width=15pt, color=mainColor](current page.north west)--(current page.north east);
+          \draw[line width=15pt, color=mainColor](current page.north east)--(current page.south east);
+          \draw[line width=15pt, color=mainColor](current page.south east)--(current page.south west);
+          \draw[line width=15pt, color=mainColor](current page.south west)--(current page.north west);
+      \end{tikzpicture}%
+      \defaultTitle
+    }
+  }{
+  \ifthenelse{\equal{#1}{D}}{% DoubleBorder
+    \setbeamertemplate{title page}{
+      \begin{tikzpicture}[overlay,remember picture, shift={(current page.center)}]%
+          % 外側太線
+          \draw[line width=10pt, color=mainColor] (-7.5,-2.5) -- (-7.5,2.5); % 左
+          \draw[line width=10pt, color=mainColor] ( 7.5,-2.5) -- ( 7.5,2.5); % 右
+          \draw[line width=10pt, color=mainColor] (-6, 4) -- (6, 4); % 上
+          \draw[line width=10pt, color=mainColor] (-6,-4) -- (6,-4); % 下
+          \draw[line width=10pt, color=mainColor] ([shift={(-7.5,-4)}]  0:1.68) arc [radius=1.68, start angle=  0, end angle= 90]; % 左下
+          \draw[line width=10pt, color=mainColor] ([shift={( 7.5,-4)}] 90:1.68) arc [radius=1.68, start angle= 90, end angle=180]; % 右下
+          \draw[line width=10pt, color=mainColor] ([shift={( 7.5, 4)}]180:1.68) arc [radius=1.68, start angle=180, end angle=270]; % 右上
+          \draw[line width=10pt, color=mainColor] ([shift={(-7.5, 4)}]270:1.68) arc [radius=1.68, start angle=270, end angle=360]; % 左上
+          % 内側細線
+          \draw[thick, color=mainColor] (-7,-1.9) -- (-7,1.9); % 左
+          \draw[thick, color=mainColor] ( 7,-1.9) -- ( 7,1.9); % 右
+          \draw[thick, color=mainColor] (-5.4, 3.5) -- (5.4, 3.5); % 上
+          \draw[thick, color=mainColor] (-5.4,-3.5) -- (5.4,-3.5); % 下
+          \draw[thick, color=mainColor] ([shift={(-7.5,-4)}] 13:2.18) arc [radius=2.18, start angle= 13, end angle= 77]; % 左下
+          \draw[thick, color=mainColor] ([shift={( 7.5,-4)}]103:2.18) arc [radius=2.18, start angle=103, end angle=167]; % 右下
+          \draw[thick, color=mainColor] ([shift={( 7.5, 4)}]193:2.18) arc [radius=2.18, start angle=193, end angle=257]; % 右上
+          \draw[thick, color=mainColor] ([shift={(-7.5, 4)}]283:2.18) arc [radius=2.18, start angle=283, end angle=347]; % 左上
+      \end{tikzpicture}%
+      \narrowTitle
+    }
+  }{
+  \ifthenelse{\equal{#1}{E}}{% Elegant
+    \setbeamertemplate{title page}{
+      \begin{tikzpicture}[overlay,remember picture]%
+          \node[anchor=north west](tl) at (current page.north west){\pgfornament[width=2.5cm, color=mainColor]{63}};%
+          \node[anchor=south west](dl) at (current page.south west){\pgfornament[width=2.5cm, color=mainColor, symmetry=h]{63}};%
+          \node[anchor=north east](tr) at (current page.north east){\pgfornament[width=2.5cm, color=mainColor]{64}};%
+          \node[anchor=south east](dr) at (current page.south east){\pgfornament[width=2.5cm, color=mainColor, symmetry=h]{64}};%
+          \node[anchor=north, yshift=-1mm](t) at (current page.north){\pgfornament[width=7.5cm, color=mainColor, symmetry=h]{88}};%
+          \node[anchor=south, yshift= 1mm](d) at (current page.south){\pgfornament[width=7.5cm, color=mainColor]{88}};%
+          \draw[very thick, color=mainColor]([yshift=-.35cm]tl.north east)--([yshift=-.35cm, xshift=-8cm]tr.north west);
+          \draw[very thick, color=mainColor]([yshift=-.35cm, xshift=8cm]tl.north east)--([yshift=-.35cm]tr.north west);
+          \draw[very thick, color=mainColor]([xshift=-.35cm]tr.south east)--([xshift=-.35cm]dr.north east);
+          \draw[very thick, color=mainColor]([yshift= .35cm]dr.south west)--([yshift= .35cm, xshift=8cm]dl.south east);
+          \draw[very thick, color=mainColor]([yshift= .35cm, xshift=-8cm]dr.south west)--([yshift= .35cm]dl.south east);
+          \draw[very thick, color=mainColor]([xshift= .35cm]dl.north west)--([xshift= .35cm]tl.south west);
+      \end{tikzpicture}%
+      \defaultTitle
+    }
+  }{
+  \ifthenelse{\equal{#1}{F}}{% Gorgeous
+    \setbeamertemplate{title page}{
+      \begin{tikzpicture}[overlay,remember picture]%
+          \node[anchor=north west] at (current page.north west){\pgfornament[width=2.5cm, color=mainColor]{61}};%
+          \node[anchor=south west] at (current page.south west){\pgfornament[width=2.5cm, color=mainColor, symmetry=h]{61}};%
+          \node[anchor=north east] at (current page.north east){\pgfornament[width=2.5cm, color=mainColor]{62}};%
+          \node[anchor=south east] at (current page.south east){\pgfornament[width=2.5cm, color=mainColor, symmetry=h]{62}};%
+          \node[anchor=north] at (current page.north){\pgfornament[height=2.3cm, color=mainColor, symmetry=h]{66}};%
+          \node[anchor=north, xshift=-3.3cm] at (current page.north){\pgfornament[width=3.5cm, color=mainColor, symmetry=h]{55}};%
+          \node[anchor=north, xshift= 3.3cm] at (current page.north){\pgfornament[width=3.5cm, color=mainColor, symmetry=h]{56}};%
+          \node[anchor=south] at (current page.south){\pgfornament[height=1cm, color=mainColor]{45}};%
+          \node[anchor=south, xshift=-3.3cm] at (current page.south){\pgfornament[width=3.5cm, color=mainColor, symmetry=h]{72}};%
+          \node[anchor=south, xshift= 3.3cm] at (current page.south){\pgfornament[width=3.5cm, color=mainColor, symmetry=h]{73}};%
+          \node[rotate= 90, yshift=-.5cm] at (current page.west){\pgfornament[width=2.2cm, color=mainColor]{49}};%
+          \node[rotate=-90, yshift=-.5cm] at (current page.east){\pgfornament[width=2.2cm, color=mainColor]{49}};%
+      \end{tikzpicture}%
+      \narrowTitle
+    }
+  }{
+  \ifthenelse{\equal{#1}{G}}{% Oriental
+    \setbeamertemplate{title page}{
+      \begin{tikzpicture}[overlay,remember picture]%
+          \newpgfornamentfamily{pgfhan}
+          \node[anchor=north west, xshift=-.2cm, yshift= .2cm] at (current page.north west){\pgfornament[width=2.5cm, color=mainColor, symmetry=h]{72}};%
+          \node[anchor=south west, xshift=-.2cm, yshift=-.2cm] at (current page.south west){\pgfornament[width=2.5cm, color=mainColor]{72}};%
+          \node[anchor=north east, xshift= .2cm, yshift= .2cm] at (current page.north east){\pgfornament[width=2.5cm, color=mainColor, symmetry=c]{72}};%
+          \node[anchor=south east, xshift= .2cm, yshift=-.2cm] at (current page.south east){\pgfornament[width=2.5cm, color=mainColor, symmetry=v]{72}};%
+      \end{tikzpicture}%
+      \defaultTitle
+    }
+  }{
+  \ifthenelse{\equal{#1}{H}}{% Patchwork
+    \setbeamertemplate{title page}{
+      \begin{tikzpicture}[overlay,remember picture]%
+          \fill[mainColor] (current page.north west) -- ([xshift= 2.5cm]current page.north west) -- ([yshift=-2.5cm]current page.north west) -- cycle;
+          \fill[mainColor] (current page.north east) -- ([xshift=-2.5cm]current page.north east) -- ([yshift=-2.5cm]current page.north east) -- cycle;
+          \fill[mainColor] (current page.south west) -- ([xshift= 2.5cm]current page.south west) -- ([yshift= 2.5cm]current page.south west) -- cycle;
+          \fill[mainColor] (current page.south east) -- ([xshift=-2.5cm]current page.south east) -- ([yshift= 2.5cm]current page.south east) -- cycle;
+          \draw[very thick, color=subColor, dashed] ([xshift= 2.3cm]current page.north west) -- ([yshift=-2.3cm]current page.north west);
+          \draw[very thick, color=subColor, dashed] ([xshift=-2.3cm]current page.north east) -- ([yshift=-2.3cm]current page.north east);
+          \draw[very thick, color=subColor, dashed] ([xshift= 2.3cm]current page.south west) -- ([yshift= 2.3cm]current page.south west);
+          \draw[very thick, color=subColor, dashed] ([xshift=-2.3cm]current page.south east) -- ([yshift= 2.3cm]current page.south east);
+      \end{tikzpicture}%
+      \defaultTitle
+    }
+  }{
+  \ifthenelse{\equal{#1}{I}}{% MetalPlate
+    \setbeamertemplate{title page}{
+      \begin{tikzpicture}[overlay,remember picture]%
+          \fill[mainColor] (current page.north west) -- ([xshift= 2.5cm]current page.north west) -- ([yshift=-2.5cm]current page.north west) -- cycle;
+          \fill[mainColor] (current page.north east) -- ([xshift=-2.5cm]current page.north east) -- ([yshift=-2.5cm]current page.north east) -- cycle;
+          \fill[mainColor] (current page.south west) -- ([xshift= 2.5cm]current page.south west) -- ([yshift= 2.5cm]current page.south west) -- cycle;
+          \fill[mainColor] (current page.south east) -- ([xshift=-2.5cm]current page.south east) -- ([yshift= 2.5cm]current page.south east) -- cycle;
+          \fill[subColor]  ([xshift= 2cm, yshift=-2mm]current page.north west) circle (0.1);
+          \fill[subColor]  ([xshift= 2mm, yshift=-2cm]current page.north west) circle (0.1);
+          \fill[subColor]  ([xshift=-2cm, yshift=-2mm]current page.north east) circle (0.1);
+          \fill[subColor]  ([xshift=-2mm, yshift=-2cm]current page.north east) circle (0.1);
+          \fill[subColor]  ([xshift= 2cm, yshift= 2mm]current page.south west) circle (0.1);
+          \fill[subColor]  ([xshift= 2mm, yshift= 2cm]current page.south west) circle (0.1);
+          \fill[subColor]  ([xshift=-2cm, yshift= 2mm]current page.south east) circle (0.1);
+          \fill[subColor]  ([xshift=-2mm, yshift= 2cm]current page.south east) circle (0.1);
+      \end{tikzpicture}%
+      \defaultTitle
+    }
+  }{
+  \ifthenelse{\equal{#1}{J}}{% Metropolitan
+    \setbeamertemplate{title page}{
+      \vbox{}
+      \vfill
+      \begingroup
+        \begin{beamercolorbox}[sep=8pt]{title}
+          \usebeamerfont{title}\inserttitle\par%
+          \ifx\insertsubtitle\@empty%
+          \else%
+            \vskip0.25em%
+            {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+          \fi%
+        \end{beamercolorbox}%
+        \vskip-1em
+        \begin{tikzpicture}%
+          \draw[tocColor, thick] (0,0) -- ++(0:\textwidth);
+        \end{tikzpicture}%
+        \vskip2em\par
+        \begin{beamercolorbox}[sep=8pt]{author}
+          \usebeamerfont{author}\insertauthor
+        \end{beamercolorbox}
+        \vskip-1em
+        \begin{beamercolorbox}[sep=8pt]{date}
+          \usebeamerfont{date}\insertdate
+        \end{beamercolorbox}
+        \vskip-0.5em
+        \begin{beamercolorbox}[sep=8pt]{institute}
+          \usebeamerfont{institute}\insertinstitute
+        \end{beamercolorbox}
+      \endgroup
+      \vfill
+      \begin{tikzpicture}[overlay,remember picture]%
+          \node[transform canvas={xshift=-.2\paperwidth, yshift=.3\paperheight}] at (current page.south east){\includegraphicsIfExist{.25\paperheight}};%
+      \end{tikzpicture}%
+    }
+  }{
+    \setbeamertemplate{title page}{
+      \defaultTitle
+    }
+  }}}}}}}}}
+}
+
+
+% -- itemize bullets -- %
+\setbeamertemplate{items}[default]
+%\setbeamertemplate{itemize item}{} % 最も外側の箇条書きにはデフォルトを適用
+\setbeamertemplate{itemize subitem}{\raise0.1\zw\hbox{$\triangleright$}}
+\setbeamertemplate{itemize subsubitem}{\textbullet}
+
+
+% -- footline -- %
+\usenavigationsymbolstemplate{}
+\setbeamertemplate{footline} {
+    \begin{beamercolorbox}[wd=\textwidth,ht=3ex,dp=1.5ex,leftskip=0.3cm,rightskip=0.3cm]{structure}
+    \hfill\usebeamerfont{page number in head/foot}
+    \insertframenumber/\inserttotalframenumber
+    \end{beamercolorbox}
+}
+
+
+% -- watermark -- %
+% 参考1：https://doratex.hatenablog.jp/entry/20160322/1458615228
+% 参考2：https://tex.stackexchange.com/questions/89588/positioning-relative-to-page-in-tikz
+% 使用方法：\waterMark{画像}{不透明度}{サイズ(1＝画面一杯)}{x座標移動}{y座標移動}{回転(反時計回り)}
+\usepackage{tikz}
+\newcommand{\waterMark}[6]{
+    \setbeamertemplate{background}{%
+        \begin{tikzpicture}[overlay,remember picture]%
+            \node[opacity=#2, rotate=#6, transform canvas={xshift=#4, yshift=#5}] at (current page.center){\includegraphics[height=#3\paperheight]{#1}};%
+        \end{tikzpicture}%
+    }
+}
+
+
+% -- code -- %
+%% 何となくmonokaiっぽい色設定
+\definecolor{keyword}{HTML}{F76299}
+\definecolor{string}{HTML}{E6DB75}
+\definecolor{comment}{HTML}{96AF87}
+\usepackage{listings}
+\usepackage{lstautogobble}
+\lstset{
+  language        = Java,                   % 言語
+  frame           = none,                   % フレーム
+  tabsize         = 4,                      % タブ文字のスペース幅
+% backgroundcolor = \color{modernDarkBlue}, % 背景色（単行コメント[\lstinline]には適用されない）
+  basicstyle      = \ttfamily,              % 基本スタイル（フォント設定）
+  keywordstyle    = \color{keyword},        % 予約語スタイル
+  ndkeywordstyle  = \color{keyword},        % 第二予約語スタイル？
+  stringstyle     = \color{string},         % 文字列スタイル
+  commentstyle    = \color{comment},        % コメントスタイル
+  columns         = fixed,                  % 列幅調整
+  basewidth       = 0.5em,                  % 字詰め
+  numbers         = left,                   % 行番号位置
+  stepnumber      = 1,                      % 行番号間隔
+  numberstyle     = \color{mainColor},      % 行番号スタイル
+  numbersep       = 0.5\zw,                 % ソースコード-行番号間隔
+  breaklines      = true,                   % 折り返し
+  breakindent     = 10pt,                   % 折り返しインデント量
+  lineskip        = -0.3\zw,                % 行間詰め
+  autogobble      = true,                   % 行頭インデントを最小0に補正（要lstautogobbleパッケージ）
+}
+
+
+% -- blocks -- %
+\setbeamertemplate{blocks}[rounded][shadow=false] % 角丸・影無し
+
+
+% -- quotation box -- %
+\def\dash{\scalebox{2}[1]{―}} % 二倍ダーシ
+\setbeamercolor{Quote}{fg=modernDarkBlue, bg=quotationBg}
+\newcommand{\quoteBox}[2]{
+    \vspace{-1\zw}
+    \begin{center}
+        ~
+        \begin{beamercolorbox}[wd=.9\textwidth, sep=2pt, rounded=true, shadow=false]{Quote}
+            #1\par
+            \rightline{\dash #2}
+        \end{beamercolorbox}
+        ~
+    \end{center}
+    \vspace{-1\zw}
+}
+
+% -- fat arrow -- %
+\usetikzlibrary{arrows.meta} % TikZによる矢印描画
+\newcommand{\hugeCenter}[2]{
+  \begin{center}
+    \textcolor{#1}{\textbf{\huge #2}}
+  \end{center}
+}
+\newcommand{\downArrow}[1]{
+  \vspace{-0.5\zw}
+  \centering
+  \begin{tikzpicture}
+    \draw[-{Triangle[width=45pt,length=15pt]}, line width=25pt, #1](0,0) -- (0, -1);
+  \end{tikzpicture}\\
+}
+\newcommand{\hugeCenterWithArrow}[2]{
+  \downArrow{#1}
+  \vspace{-16pt}
+  \hugeCenter{#1}{#2}
+}
+\newcommand{\downArrowHead}[1]{
+  \vspace{-1.5\zw}
+  \begin{center}
+    \scalebox{2}[1]{\rotatebox{-90}{\textcolor{#1}{\texteb{\Huge ＞}}}}
+  \end{center}
+}
+\newcommand{\hugeCenterWithArrowHead}[2]{
+  \downArrowHead{#1}
+  \vspace{-22pt}
+  \hugeCenter{#1}{#2}
+}
+
+\mode<all>

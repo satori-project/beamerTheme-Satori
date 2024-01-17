@@ -1,0 +1,46 @@
+\documentclass[
+    aspectratio=169,   % アスペクト比。基本的に169(=16:9)でよい
+    xcolor={           % Beamerはxcolorも自動で読み込むので、パラメータ指定
+        rgb,           %   ・Hsb色指定のためにrgbを設定
+        svgnames},     %   ・指定可能色名：https://www.latextemplates.com/svgnames-colors
+    unicode,           % LuaLaTeXを使用する上で要指定
+    12pt,              % 基準フォントサイズ
+    unknownkeysallowed % 未定義のキーによるエラーを無視
+]{beamer}
+
+\usetheme{satori} % 使用beamerテーマ
+%% パス指定で使用する場合（テーマファイルが同階層に無いなど）は以下
+%\usepackage{themeFiles/beamerthemesatori}
+
+%% 色相指定（コメントアウトでモノクロ）
+\defineColorWithHue{30} % 0-360
+
+%% ロゴ画像指定（ロゴ表示しない場合はコメントアウト）
+\renewcommand{\logoImage}{好きな画像を指定}
+
+%% ウォーターマーク（表示しない場合はコメントアウト）
+%% \waterMark{画像}{不透明度}{サイズ(1＝画面一杯)}{x座標移動}{y座標移動}{回転(反時計回り)}
+\waterMark{好きな画像を指定}{.03}{1.2}{3cm}{-.8cm}{0}
+
+%% 和暦表示にしたい場合、以下の2行をコメントアウト解除
+%\usepackage{bxwareki}
+%\renewcommand{\today}{\warekitoday}
+
+%% タイトル類
+\titlePattern{A} % タイトル頁のテーマ：A-Jを指定
+\title{サンプル}
+\subtitle{Hoge}
+\author{Fuga}
+\institute{Piyo}
+\date{\today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\begin{frame}[plain,b]
+  \titlepage
+\end{frame}
+
+% ここにスライドを書く
+
+\end{document}
