@@ -22,7 +22,7 @@ Satoriテーマはデフォルトでフォント・ルビなどの設定が組�
 
 1. 任意のtexファイルを作成する。
    - [template.tex](/template.tex)を元にするとよい。
-   - 同じディレクトリ階層に[beamerthemesatori.sty](themeFile/beamerthemesatori.sty)を置くこと。
+   - 同じディレクトリ階層に[beamerthemesatori.sty](beamerthemesatori.sty)を置くこと。
 2. スライド内容を記述し、UTF-8で保存する。
    - Beamerでのスライド記述方法は、適宜調べること。
 3. 作成したtexファイルと同じ階層でターミナル起動。

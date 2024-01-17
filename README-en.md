@@ -14,7 +14,7 @@ Satori Theme is a Beamer theme with Japanese language support.
 
 1. Create any tex file.
    - You can use [template.tex](/template.tex) as a base.
-   - Place [beamerthemesatori.sty](themeFile/beamerthemesatori.sty) in the same directory.
+   - Place [beamerthemesatori.sty](beamerthemesatori.sty) in the same directory.
 2. Describe the slide contents and save the file in UTF-8.
    - Find out how to describe slides in Beamer on your own.
 3. Start a terminal at the same directory as the created tex file.
